@@ -7,7 +7,14 @@ export const Task = ({ task, onDelete, onToogleCompeted }) => {
         style={styles.checkContainer}
         onPress={() => onToogleCompeted()}
       >
-        <Image source={require("../assets/uncheck.png")} style={styles.image} />
+        <Image
+          source={
+            task.isCompleted
+              ? require("../assets/checked.png")
+              : require("../assets/uncheck.png")
+          }
+          style={styles.image}
+        />
         <Text
           style={task.isCompleted ? styles.todoTextCompleted : styles.todoText}
         >

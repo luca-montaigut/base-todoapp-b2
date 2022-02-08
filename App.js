@@ -15,15 +15,13 @@ export default function App() {
   const [text, setText] = useState("");
   const [tasks, setTasks] = useState([]);
 
-  const handlePress = () => {
-    setTasks((previousTasks) => [
-      ...previousTasks,
-      {
-        id: Math.floor(Math.random() * 100000),
-        value: text,
-        isCompleted: false,
-      },
-    ]);
+  const handleAdd = () => {
+    const newTask = {
+      id: Math.floor(Math.random() * 100000),
+      value: text,
+      isCompleted: false,
+    };
+    setTasks((previousTasks) => [...previousTasks, newTask]);
     setText("");
   };
 
@@ -31,7 +29,17 @@ export default function App() {
     setTasks((previousTasks) => previousTasks.filter((task) => task.id !== id));
   };
 
-  const handleToggleComplete = (id) => {};
+  const handleToggleComplete = (id) => {
+    setTasks((previousTasks) =>
+      previousTasks.map((task) => {
+        if (task.id === id) {
+          return { ...task, isCompleted: !task.isCompleted };
+        } else {
+          return task;
+        }
+      })
+    );
+  };
 
   return (
     <Layout>
@@ -46,7 +54,7 @@ export default function App() {
           />
           <Button
             title="Add Todo"
-            onPress={() => handlePress()}
+            onPress={() => handleAdd()}
             disabled={!text}
             style={styles.button}
           />
