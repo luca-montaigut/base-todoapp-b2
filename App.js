@@ -16,9 +16,22 @@ export default function App() {
   const [tasks, setTasks] = useState([]);
 
   const handlePress = () => {
-    setTasks((previousTasks) => [...previousTasks, text]);
+    setTasks((previousTasks) => [
+      ...previousTasks,
+      {
+        id: Math.floor(Math.random() * 100000),
+        value: text,
+        isCompleted: false,
+      },
+    ]);
     setText("");
   };
+
+  const handleDelete = (id) => {
+    setTasks((previousTasks) => previousTasks.filter((task) => task.id !== id));
+  };
+
+  const handleToggleComplete = (id) => {};
 
   return (
     <Layout>
@@ -29,6 +42,7 @@ export default function App() {
             value={text}
             placeholder="Enter Todo"
             onChangeText={(newText) => setText(newText)}
+            style={styles.input}
           />
           <Button
             title="Add Todo"
@@ -38,10 +52,16 @@ export default function App() {
           />
         </View>
         <FlatList
-          keyExtractor={(item, index) => item + index}
+          keyExtractor={(item) => item.id}
           data={tasks}
           contentContainerStyle={styles.list}
-          renderItem={({ item }) => <Task text={item} />}
+          renderItem={({ item }) => (
+            <Task
+              task={item}
+              onDelete={() => handleDelete(item.id)}
+              onToogleCompeted={() => handleToggleComplete(item.id)}
+            />
+          )}
         />
       </View>
     </Layout>
@@ -62,4 +82,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   list: { flexGrow: 1, paddingBottom: 15 },
+  input: {
+    flex: 1,
+  },
 });
