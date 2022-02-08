@@ -10,6 +10,8 @@ export default function App() {
       <ImageBackground
         source={require("./src/assets/background.png")}
         resizeMode="cover"
+        imageStyle={styles.image}
+        style={styles.background}
       >
         <TodoScreen />
       </ImageBackground>
@@ -20,8 +22,8 @@ export default function App() {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    justifyContent: "center",
-    width: "100%",
-    height: "100%",
+  },
+  image: {
+    opacity: 0.1,
   },
 });
