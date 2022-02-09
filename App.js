@@ -1,16 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { ImageBackground, StyleSheet } from "react-native";
 
 import { Layout } from "./src/components/Layout";
-import { TodoNavigator } from "./src/navigators/TodoNavigator";
+import { TabNavigator } from "./src/navigators/TabNavigator";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { TodoScreen } from "./src/screens/TodoScreen";
-import { ProfileScreen } from "./src/screens/ProfileScreen";
-import { ROUTES } from "./src/navigators/routes";
-import { Feather } from "@expo/vector-icons";
-
-const Tab = createBottomTabNavigator();
+import { AuthProvider, useAuth } from "./src/contexts/AuthProvider";
+import { AuthNavigator } from "./src/navigators/AuthNavigator";
 
 const navTheme = {
   ...DefaultTheme,
@@ -22,48 +17,28 @@ const navTheme = {
 
 export default function App() {
   return (
-    <Layout>
-      <ImageBackground
-        source={require("./src/assets/background.png")}
-        resizeMode="cover"
-        imageStyle={styles.image}
-        style={styles.background}
-      >
-        <NavigationContainer theme={navTheme}>
-          <Tab.Navigator
-            screenOptions={{
-              tabBarActiveTintColor: "red",
-              tabBarInactiveTintColor: "black",
-            }}
-          >
-            <Tab.Screen
-              options={{
-                headerShown: false,
-                tabBarLabel: "Accueil",
-                tabBarIcon: ({ color, size }) => (
-                  <Feather name="home" size={size} color={color} />
-                ),
-              }}
-              name={ROUTES.HOME}
-              component={TodoNavigator}
-            />
-            <Tab.Screen
-              options={{
-                headerShown: false,
-                tabBarLabel: "Profil",
-                tabBarIcon: ({ color, size }) => (
-                  <Feather name="box" size={size} color={color} />
-                ),
-              }}
-              name={ROUTES.PROFILE}
-              component={ProfileScreen}
-            />
-          </Tab.Navigator>
-        </NavigationContainer>
-      </ImageBackground>
-    </Layout>
+    <AuthProvider>
+      <Layout>
+        <ImageBackground
+          source={require("./src/assets/background.png")}
+          resizeMode="cover"
+          imageStyle={styles.image}
+          style={styles.background}
+        >
+          <NavigationContainer theme={navTheme}>
+            <Root />
+          </NavigationContainer>
+        </ImageBackground>
+      </Layout>
+    </AuthProvider>
   );
 }
+
+const Root = () => {
+  const { currentUser } = useAuth();
+
+  return currentUser !== null ? <TabNavigator /> : <AuthNavigator />;
+};
 
 const styles = StyleSheet.create({
   background: {

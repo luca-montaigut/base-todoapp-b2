@@ -3,4 +3,5 @@ export const ROUTES = {
   TODO: "Todo",
   TASK: "Task",
   PROFILE: "Profile",
+  LOGIN: "Login",
 };
