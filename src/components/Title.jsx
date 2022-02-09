@@ -3,8 +3,8 @@ import { View, Text, StyleSheet } from "react-native";
 export const Title = () => {
   return (
     <View style={styles.titleContainer}>
-      <Text style={styles.particule}>My</Text>
-      <Text style={styles.body}>Todo App</Text>
+      <Text style={styles.particule}>My </Text>
+      <Text style={styles.body}>TodoApp</Text>
     </View>
   );
 };

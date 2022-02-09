@@ -1,11 +1,15 @@
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/core";
+import { ROUTES } from "../navigators/routes";
 
 export const Task = ({ task, onDelete, onToogleCompeted }) => {
+  const navigation = useNavigation();
   return (
     <View style={styles.taskContainer}>
       <Pressable
         style={styles.checkContainer}
-        onPress={() => onToogleCompeted()}
+        onPress={() => navigation.navigate(ROUTES.TASK, { task })}
+        onLongPress={() => onToogleCompeted(task.id)}
       >
         <Image
           source={
