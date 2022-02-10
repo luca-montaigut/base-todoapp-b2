@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   View,
@@ -13,36 +13,71 @@ import {
 import { Task } from "../components/Task";
 import { Title } from "../components/Title";
 
+import { db } from "../../firebase-config";
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  serverTimestamp,
+  deleteDoc,
+  doc,
+  updateDoc,
+  query,
+  orderBy,
+} from "firebase/firestore";
+import { useAuth } from "../contexts/AuthProvider";
+
 export const TodoScreen = () => {
+  const { currentUser } = useAuth();
   const [text, setText] = useState("");
   const [tasks, setTasks] = useState([]);
   const [visibility, setVisibility] = useState(false);
 
-  const handleAdd = () => {
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      query(
+        collection(db, `users/${currentUser.uid}/tasks`),
+        orderBy("createdAt", "desc")
+      ),
+      (querySnapshot) => {
+        const myTasks = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        setTasks(myTasks);
+      }
+    );
+    return () => unsubscribe();
+  }, []);
+
+  const handleAdd = async () => {
     const newTask = {
-      id: Math.floor(Math.random() * 100000),
       value: text,
       isCompleted: false,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     };
-    setTasks((previousTasks) => [...previousTasks, newTask]);
+
+    const collectionRef = collection(db, `users/${currentUser.uid}/tasks`);
+    await addDoc(collectionRef, newTask);
+
     setText("");
     setVisibility(false);
   };
 
-  const handleDelete = (id) => {
-    setTasks((previousTasks) => previousTasks.filter((task) => task.id !== id));
+  const handleDelete = async (id) => {
+    const docRef = doc(db, `users/${currentUser.uid}/tasks/`, id);
+    await deleteDoc(docRef);
   };
 
-  const handleToggleComplete = (id) => {
-    setTasks((previousTasks) =>
-      previousTasks.map((task) => {
-        if (task.id === id) {
-          return { ...task, isCompleted: !task.isCompleted };
-        } else {
-          return task;
-        }
-      })
-    );
+  const handleToggleComplete = async (id) => {
+    const docRef = doc(db, `users/${currentUser.uid}/tasks/`, id);
+    const currentTask = tasks.find((task) => task.id === id);
+    const updateData = {
+      isCompleted: !currentTask.isCompleted,
+      updatedAt: serverTimestamp(),
+    };
+    await updateDoc(docRef, updateData);
   };
 
   return (

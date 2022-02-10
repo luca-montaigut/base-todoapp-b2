@@ -1,26 +1,29 @@
 import { View, Text, StyleSheet } from "react-native";
+import { useTheme } from "../contexts/ThemeProvider";
 
 export const Title = () => {
+  const { theme } = useTheme();
   return (
-    <View style={styles.titleContainer}>
-      <Text style={styles.particule}>My </Text>
-      <Text style={styles.body}>TodoApp</Text>
+    <View style={styles(theme).titleContainer}>
+      <Text style={styles(theme).particule}>My </Text>
+      <Text style={styles(theme).body}>TodoApp</Text>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: "row",
-  },
-  particule: {
-    color: "red",
-    fontSize: 40,
-    fontWeight: "bold",
-  },
-  body: {
-    color: "black",
-    fontSize: 40,
-    fontWeight: "bold",
-  },
-});
+const styles = (theme) =>
+  StyleSheet.create({
+    titleContainer: {
+      flexDirection: "row",
+    },
+    particule: {
+      color: theme.colors.primary,
+      fontSize: 40,
+      fontWeight: "bold",
+    },
+    body: {
+      color: theme.colors.textColor,
+      fontSize: 40,
+      fontWeight: "bold",
+    },
+  });

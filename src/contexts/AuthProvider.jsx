@@ -12,12 +12,14 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       setLoading(false);
+      setInitialLoading(false);
     });
     return () => unsubscribe();
   }, []);
@@ -27,7 +29,6 @@ export const AuthProvider = ({ children }) => {
     const errorCode = error.code;
     const errorMessage = error.message;
     setError(`${errorCode} : ${errorMessage}`);
-    // alert(`${errorCode} : ${errorMessage}`);
   };
 
   const cleanError = () => {
@@ -67,7 +68,7 @@ export const AuthProvider = ({ children }) => {
         cleanError,
       }}
     >
-      {children}
+      {!initialLoading && children}
     </AuthContext.Provider>
   );
 };
